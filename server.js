@@ -9,6 +9,10 @@ const port = 3000;
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', index.html));
+});
+
 // Endpoint to get city and country data
 app.get('/api/cities', async (req, res) => {
   try {
@@ -26,12 +30,12 @@ app.get('/api/cities', async (req, res) => {
 });
 
 app.get('/api/data', async (req, res) => {
-  const { longitude, latitude } = req.query;
-  const apiUrl = `http://www.7timer.info/bin/api.pl?lon=${longitude}&lat=${latitude}&product=astro&output=json`
-
   try {
+    const { longitude, latitude } = req.query;
+    const apiUrl = `http://www.7timer.info/bin/api.pl?lon=${longitude}&lat=${latitude}&product=civil&output=json`
     const response = await axios.get(apiUrl);
-    res.json(response.data);
+    const data = response.data;
+    res.json(data.dataseries);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch API' })
   }
