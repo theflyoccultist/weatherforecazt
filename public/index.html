@@ -15,6 +15,16 @@
       updateTime();
       setInterval(updateTime, 1000);
 
+      //helper function to create an element with optional attributes and content
+      function createElement(tag, attributes = {}, content = '') {
+        const element = document.createElement(tag);
+        for (const key in attributes) {
+          element.setAttribute(key, attributes[key]);
+        }
+        element.innerHTML = content;
+        return element;
+      }
+
       // the fetch API
       fetch('/api/cities')
         .then(response => response.json())
@@ -33,27 +43,34 @@
             fetch(`/api/data?longitude=${longitude}&latitude=${latitude}`)
             .then(response => response.json())
             .then(apiData => {
-              console.log(apiData);
                 const resultContainer = document.getElementById('forecast-block');
                 resultContainer.innerHTML = ''; // Clear previous results
 
-                // Create a list to display the data
-                const ul = document.createElement('dablock');
+                // Create a container for the cards
+                const container = createElement('div', { class: 'dablock' });
+
+                // Create and append cards for each item
                 apiData.forEach((item, index) => {
-                  const li = document.createElement('card');
-                  li.textContent = `Item ${index + 1}: Weather - ${item.weather}, Temperature - ${item.temp2m}°C`;
-                  ul.appendChild(li);
+                  const cardContent = `
+                    <div class="card-body">
+                      <p class="weather-temperatures">Item ${index + 1}: Timepoint: ${item.timepoint}, Weather - ${item.weather}, Temperature - ${item.temp2m}°C</p>
+                    </div>`;
+                    const card = createElement('div', { class: 'card' }, cardContent);
+                    container.appendChild(card);
                 });
-                resultContainer.appendChild(ul);
-            })
-            .catch(error => console.error('Error fetching API data', error));
+                resultContainer.appendChild(container);
+              })
+              .catch(error => {
+                console.error('Error fetching API data', error);
+                document.getElementById('forecast-block').textContent = 'Error fetching data';
+            });
           });
-        })
-        .catch(error => console.error('Error fetching city data:', error));
+        }) .catch(error => console.error('Error fetching city data:', error));
     });
   </script>
 </head>
 <body>
+  <img class="hero" src="images/banner.jpg" alt="banner">
   <h1>Météo Europe</h1>
   <h2>Prévisions de la semaine</h2>
   <label for="city-dropdown"> Choisissez une ville...</label>
@@ -71,7 +88,7 @@
                   <div class="card">
                       <p class="weather-date">Thu Jul 25</p>
                       <div class="weather-icon-div">
-                          <img class="weather-icon" src="../images/pcloudy.png">
+                          <img class="weather-icon" src="images/pcloudy.png">
                       </div>
                       <div class="card-body">
                           <p class="weather-description">PARTLY CLOUDY</p>
@@ -85,7 +102,7 @@
       </div>
     <footer>
       <div class="section-divider">
-        <img src="../images/cloudline.png">
+        <img src="images/cloudline.png">
       </div>
       <p></p>
         <code class="copyright-text">Copyright 2024 the conventionals</code>
