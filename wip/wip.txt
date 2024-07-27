@@ -39,4 +39,5 @@ what we need to show dynamically in each of those segments, is the average weath
 and the highest and the lowest temperatures in that range of objects.
 we need localeTime too.
 
+
 localhost:3000/api/data?longitude=8.541&latitude=47.376

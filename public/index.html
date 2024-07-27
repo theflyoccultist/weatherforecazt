@@ -25,6 +25,22 @@
         return element;
       }
 
+      // show the loading text
+      function showLoading() {
+        const loadingText = createElement('p', { id: 'loading-text'}, 'Données en cours de chargement, veuillez patienter...')
+        const resultContainer = document.getElementById('forecast-block');
+        resultContainer.innerHTML = '';
+        resultContainer.appendChild(loadingText);
+      }
+
+      // hide the loading text
+      function hideLoading() {
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) {
+          loadingText.remove();
+        }
+      }
+
       // the fetch API
       fetch('/api/cities')
         .then(response => response.json())
@@ -39,22 +55,32 @@
           });
 
           dropdown.addEventListener('change', (event) => {
+            showLoading();
             const [ longitude, latitude ] = event.target.value.split(',');
             fetch(`/api/data?longitude=${longitude}&latitude=${latitude}`)
             .then(response => response.json())
             .then(apiData => {
+                hideLoading();
+
                 const resultContainer = document.getElementById('forecast-block');
                 resultContainer.innerHTML = ''; // Clear previous results
 
                 // Create a container for the cards
                 const container = createElement('div', { class: 'dablock' });
 
+                const filteredData = apiData.filter(item => item.timepoint % 24 === 0);
+
                 // Create and append cards for each item
-                apiData.forEach((item, index) => {
+                filteredData.forEach((item, index) => {
                   const cardContent = `
-                    <div class="card-body">
-                      <p class="weather-temperatures">Item ${index + 1}: Timepoint: ${item.timepoint}, Weather - ${item.weather}, Temperature - ${item.temp2m}°C</p>
-                    </div>`;
+                    <p class="weather-date">Thu Jul 25</p>
+                      <div class="weather-icon-div">
+                          <img class="weather-icon" src="images/${item.weather}.png">
+                      </div>
+                      <div class="card-body">
+                          <p class="weather-description">Weather : ${item.weather}</p>
+                          <p class="weather-temperatures">Item ${index + 1}: Timepoint: ${item.timepoint}, Temperature : ${item.temp2m}°C</p>
+                      </div>`;
                     const card = createElement('div', { class: 'card' }, cardContent);
                     container.appendChild(card);
                 });
@@ -78,24 +104,14 @@
     <!-- Options will be populated here -->
   </select>
       
-  <!--the forecast which shall be shown 7 times-->
+ 
       <p></p>
       <div id="get-results-heading" class="section-subheading"></div>
       <div id="result-container" class="result-container">
           <div id="forecast-block" class="forecast-block">
 
               <div class="dablock">
-                  <div class="card">
-                      <p class="weather-date">Thu Jul 25</p>
-                      <div class="weather-icon-div">
-                          <img class="weather-icon" src="images/pcloudy.png">
-                      </div>
-                      <div class="card-body">
-                          <p class="weather-description">PARTLY CLOUDY</p>
-                          <p class="weather-temperatures">H: 20C</p>
-                          <p class="weather-temperatures">L: 10C</p>
-                      </div>
-                  </div>
+                  <!--the forecast will be shown here-->
               </div>
 
           </div>
