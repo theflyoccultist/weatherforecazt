@@ -15,6 +15,30 @@
       updateTime();
       setInterval(updateTime, 1000);
 
+      let currentDate = new Date();
+
+      // function to increment the Date
+      function incrementDate(startDate, days) {
+        let newDate = new Date(startDate);
+
+        for (let i = 0; i < days; i++) {
+          newDate.setDate(newDate.getDate() + 1);
+        }
+        return newDate;
+      }
+
+      // function to format the Date
+      function formatDate(date) {
+        return date.toLocaleString('en-us', {
+        weekday: 'short',
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+        })
+      }
+
       //helper function to create an element with optional attributes and content
       function createElement(tag, attributes = {}, content = '') {
         const element = document.createElement(tag);
@@ -27,7 +51,7 @@
 
       // show the loading text
       function showLoading() {
-        const loadingText = createElement('p', { id: 'loading-text'}, 'Données en cours de chargement, veuillez patienter...')
+        const loadingText = createElement('p', { id: 'loading-text'}, 'Loading data...')
         const resultContainer = document.getElementById('forecast-block');
         resultContainer.innerHTML = '';
         resultContainer.appendChild(loadingText);
@@ -72,15 +96,19 @@
 
                 // Create and append cards for each item
                 filteredData.forEach((item, index) => {
+                  currentDate = incrementDate(currentDate, 1);
+                  const formattedDate = formatDate(currentDate);
                   const cardContent = `
-                    <p class="weather-date">Thu Jul 25</p>
+                    <p class="weather-date">${formattedDate}</p>
                       <div class="weather-icon-div">
                           <img class="weather-icon" src="images/${item.weather}.png">
                       </div>
                       <div class="card-body">
                           <p class="weather-description">Weather : ${item.weather}</p>
-                          <p class="weather-temperatures">Item ${index + 1}: Timepoint: ${item.timepoint}, Temperature : ${item.temp2m}°C</p>
+                          <p class="weather-temperatures">Highest : ${item.temp2m}°C</p>
+                          <p class="weather-temperatures">Lowest : ${Math.floor(item.temp2m * 0.75)}°C</p>
                       </div>`;
+                      console.log(typeof item.temp2m);
                     const card = createElement('div', { class: 'card' }, cardContent);
                     container.appendChild(card);
                 });
@@ -97,14 +125,12 @@
 </head>
 <body>
   <img class="hero" src="images/banner.jpg" alt="banner">
-  <h1>Météo Europe</h1>
-  <h2>Prévisions de la semaine</h2>
-  <label for="city-dropdown"> Choisissez une ville...</label>
+  <h1>European cities weather</h1>
+  <h2>Weekly forecast</h2>
+  <label for="city-dropdown"> Choose a city...</label>
   <select id="city-dropdown">
     <!-- Options will be populated here -->
   </select>
-      
- 
       <p></p>
       <div id="get-results-heading" class="section-subheading"></div>
       <div id="result-container" class="result-container">

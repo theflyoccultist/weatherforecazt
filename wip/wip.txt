@@ -41,3 +41,12 @@ we need localeTime too.
 
 
 localhost:3000/api/data?longitude=8.541&latitude=47.376
+
+
+___________________________________________________________
+
+the time point should be -12, and 0 for each item. i have tried item[-12].temp2m and it did not work. i think it is because item is immutable within the function.
+that means we have to change it from outside.
+
+that was difficult without complicating the code too mucn, so i decided directly to change the value inside temp.
+not the most accurate but that's what i can do.
