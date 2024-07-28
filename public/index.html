@@ -18,7 +18,8 @@
       let currentDate = new Date();
 
       // function to increment the Date
-      function incrementDate(startDate, days) {
+      function incrementDate(days) {
+        let startDate = new Date();
         let newDate = new Date(startDate);
 
         for (let i = 0; i < days; i++) {
@@ -93,11 +94,12 @@
                 const container = createElement('div', { class: 'dablock' });
 
                 const filteredData = apiData.filter(item => item.timepoint % 24 === 0);
-
+                  let days = 0;
                 // Create and append cards for each item
                 filteredData.forEach((item, index) => {
-                  currentDate = incrementDate(currentDate, 1);
-                  const formattedDate = formatDate(currentDate);
+                  let daysPlus = ++days;
+                  let incrementedDate = incrementDate(daysPlus);
+                  const formattedDate = formatDate(incrementedDate);
                   const cardContent = `
                     <p class="weather-date">${formattedDate}</p>
                       <div class="weather-icon-div">
@@ -108,7 +110,6 @@
                           <p class="weather-temperatures">Highest : ${item.temp2m}°C</p>
                           <p class="weather-temperatures">Lowest : ${Math.floor(item.temp2m * 0.75)}°C</p>
                       </div>`;
-                      console.log(typeof item.temp2m);
                     const card = createElement('div', { class: 'card' }, cardContent);
                     container.appendChild(card);
                 });
