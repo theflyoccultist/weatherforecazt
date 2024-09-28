@@ -22,7 +22,7 @@ Follow these steps to get your development environment running:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/weather-forecast-project.git
+   git clone https://github.com/theflyoccultist/weather-forecast-project.git
    cd weather-forecast-project
    ```
 
